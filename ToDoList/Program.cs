@@ -5,16 +5,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.IO;
 using ToDoList;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ToDoList
 {
+    [System.Serializable] // Move the Serializable attribute to the class declaration  
     class Program
     {
         enum Menu { Listagem = 1, Adcionar, Editar, Marcar, Remover, Gerenciar, Sair }
 
         static void Main(string[] args)
         {
-            TaskManager taskManager = new TaskManager(); // Moved the instantiation of TaskManager here
+            
+            TaskManager taskManager = new TaskManager(); // Moved the instantiation of TaskManager here  
+            taskManager.LoadFromFile();
             bool escolheuSair = false;
 
             while (!escolheuSair)
@@ -23,7 +27,7 @@ namespace ToDoList
                 Console.WriteLine("===== SISTEMA DE TAREFAS - v1.0 ====");
                 Console.WriteLine("====================================");
 
-                Console.WriteLine("1. Listar tarefas\n2. Adicionar nova tarefa\n3. Editar tarefa\n4. Marcar tarefa como concluída\n5. Remover tarefas\n6. Gerenciar categorias\n7. Salvar e sair");
+                Console.WriteLine("1. Listar tarefas\n2. Adicionar nova tarefa\n3. Editar tarefa\n4. Marcar tarefa como concluída\n5. Remover tarefas\n6. Gerenciar categorias\n7. Sair");
 
                 Console.WriteLine("----------------------------------");
                 Console.Write("Escolha uma opção: ");
@@ -41,9 +45,11 @@ namespace ToDoList
                         break;
 
                     case Menu.Editar:
+                        taskManager.EditTask();
                         break;
 
                     case Menu.Marcar:
+                        taskManager.CompleteTask();
                         break;
 
                     case Menu.Remover:
