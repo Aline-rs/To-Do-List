@@ -43,7 +43,7 @@ namespace ToDoList
                 Console.WriteLine("Data inválida. A tarefa não foi adicionada.");
                 Console.WriteLine("Aperte ENTER para voltar ao menu.");
                 Console.ReadLine();
-                return; // Retorna imediatamente ao menu
+                return;
             }
 
             Console.WriteLine("\nCategorias disponíveis:");
@@ -52,11 +52,33 @@ namespace ToDoList
                 Console.WriteLine($"{(int)categoria}. {categoria}");
             }
 
-            Console.Write("\nEscolha uma categoria (número): ");
-            if (int.TryParse(Console.ReadLine(), out int categoriaEscolhida) &&
-                Enum.IsDefined(typeof(Category.Categoria), categoriaEscolhida))
+            int index = Enum.GetValues(typeof(Category.Categoria)).Length + 1;
+            foreach (var categoria in Category.CategoriasAdicionais)
             {
-                task.categoria = ((Category.Categoria)categoriaEscolhida).ToString();
+                Console.WriteLine($"{index}. {categoria}");
+                index++;
+            }
+
+            Console.Write("\nEscolha uma categoria (número): ");
+            if (int.TryParse(Console.ReadLine(), out int categoriaEscolhida))
+            {
+                if (categoriaEscolhida >= 1 && categoriaEscolhida <= Enum.GetValues(typeof(Category.Categoria)).Length)
+                {
+                    task.categoria = ((Category.Categoria)categoriaEscolhida).ToString();
+                }
+                else if (categoriaEscolhida > Enum.GetValues(typeof(Category.Categoria)).Length &&
+                         categoriaEscolhida <= Enum.GetValues(typeof(Category.Categoria)).Length + Category.CategoriasAdicionais.Count)
+                {
+                    task.categoria = Category.CategoriasAdicionais[categoriaEscolhida - Enum.GetValues(typeof(Category.Categoria)).Length - 1];
+                }
+                else
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("Categoria inválida. A tarefa não foi adicionada.");
+                    Console.WriteLine("Aperte ENTER para voltar ao menu.");
+                    Console.ReadLine();
+                    return;
+                }
             }
             else
             {
@@ -64,7 +86,7 @@ namespace ToDoList
                 Console.WriteLine("Categoria inválida. A tarefa não foi adicionada.");
                 Console.WriteLine("Aperte ENTER para voltar ao menu.");
                 Console.ReadLine();
-                return; // Retorna imediatamente ao menu
+                return;
             }
 
             tasks.Add(task);

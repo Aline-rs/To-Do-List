@@ -17,7 +17,9 @@ namespace ToDoList
         static void Main(string[] args)
         {
             
-            TaskManager taskManager = new TaskManager(); // Moved the instantiation of TaskManager here  
+            TaskManager taskManager = new TaskManager();
+            Category category = new Category();
+
             taskManager.LoadFromFile();
             bool escolheuSair = false;
 
@@ -57,6 +59,7 @@ namespace ToDoList
                         break;
 
                     case Menu.Gerenciar:
+                        category.MenuCategory();
                         break;
 
                     case Menu.Sair:
