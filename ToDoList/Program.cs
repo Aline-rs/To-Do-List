@@ -21,6 +21,7 @@ namespace ToDoList
             Category category = new Category();
 
             taskManager.LoadFromFile();
+            category.LoadFromFileCategories();
             bool escolheuSair = false;
 
             while (!escolheuSair)

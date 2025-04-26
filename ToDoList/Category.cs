@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.Text.Json;
+
 
 namespace ToDoList
 {
+    [Serializable]
     public class Category
+
+
     {
-        public enum Categoria { Casa = 1, Pessoal, Estudo }
+        public static List<string> Categorias = new List<string> { "Casa", "Pessoal", "Estudo" };
         enum Gerenciador { Listar = 1, Adicionar, Remover, Voltar }
-        //public string Name { get; set; }
-        public static List<string> CategoriasAdicionais = new List<string>();
 
         TaskManager taskManager = new TaskManager();
 
         public void MenuCategory()
         {
             bool voltarMenuPrincipal = false;
-
 
             while (!voltarMenuPrincipal)
             {
@@ -34,7 +34,6 @@ namespace ToDoList
                 Console.Write("Escolha uma opção: ");
                 int intOp = int.Parse(Console.ReadLine());
                 Gerenciador opcao = (Gerenciador)intOp;
-
 
                 switch (opcao)
                 {
@@ -54,32 +53,26 @@ namespace ToDoList
                         voltarMenuPrincipal = true;
                         break;
                 }
-
-
             }
         }
-        public void ListCategory()
+
+        public void ListCategory(bool pausar = true)
         {
             Console.Clear();
             Console.WriteLine("-------------------------------------");
             Console.WriteLine("          CATEGORIAS ATUAIS          ");
             Console.WriteLine("-------------------------------------");
 
-            foreach (var categoria in Enum.GetValues(typeof(Categoria)))
+            for (int i = 0; i < Categorias.Count; i++)
             {
-                Console.WriteLine($"{(int)categoria}. {categoria}");
+                Console.WriteLine($"{i + 1}. {Categorias[i]}");
             }
 
-            int index = Enum.GetValues(typeof(Categoria)).Length + 1;
-            foreach (var categoria in CategoriasAdicionais)
+            if (pausar)
             {
-                Console.WriteLine($"{index}. {categoria}");
-                index++;
+                Console.WriteLine("Aperte ENTER para voltar ao menu.");
+                Console.ReadLine();
             }
-
-            Console.WriteLine();
-            Console.WriteLine("Aperte ENTER para voltar ao menu de categorias.");
-            Console.ReadLine();
         }
 
         public void AddCategory()
@@ -91,15 +84,18 @@ namespace ToDoList
             Console.Write("Nome da nova categoria: ");
             string nomeCategoria = Console.ReadLine();
 
-            if (!string.IsNullOrWhiteSpace(nomeCategoria) && !CategoriasAdicionais.Contains(nomeCategoria))
+            if (!string.IsNullOrWhiteSpace(nomeCategoria) && !Categorias.Contains(nomeCategoria))
             {
-                CategoriasAdicionais.Add(nomeCategoria);
+                Categorias.Add(nomeCategoria);
                 Console.WriteLine("Categoria adicionada com sucesso!");
-                taskManager.SaveToFile();
+                SaveToFileCategories();
+                Console.WriteLine();
+
             }
             else
             {
                 Console.WriteLine("Categoria inválida ou já existente.");
+                Console.WriteLine();
             }
 
             Console.WriteLine("Aperte ENTER para voltar ao menu.");
@@ -114,22 +110,41 @@ namespace ToDoList
             Console.WriteLine("-------------------------------------");
             Console.Write("Nome da nova categoria: ");
 
-            ListCategory();
+            ListCategory(false);
+            Console.WriteLine();
 
-            Console.Write("Digite o nome da categoria a ser removida: ");
-            string nomeCategoria = Console.ReadLine();
-
-            if (CategoriasAdicionais.Contains(nomeCategoria))
+            Console.Write("Digite o número da categoria a ser removida: ");
+            if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= Categorias.Count)
             {
-                CategoriasAdicionais.Remove(nomeCategoria);
-                Console.WriteLine("Categoria removida com sucesso!");
-                taskManager.SaveToFile();
+                string categoriaRemovida = Categorias[index - 1];
+                Categorias.RemoveAt(index - 1);
+                Console.WriteLine();
+                SaveToFileCategories();
+                Console.WriteLine($"Categoria '{categoriaRemovida}' removida com sucesso!");
+                Console.WriteLine();
             }
             else
             {
-                Console.WriteLine("Categoria inválida ou não existe.");
+                Console.WriteLine("Opção inválida!");
             }
+
+            Console.WriteLine("Aperte ENTER para voltar ao menu.");
+            Console.ReadLine();
         }
 
+        public void SaveToFileCategories()
+        {
+            string json = JsonSerializer.Serialize(Categorias);
+            File.WriteAllText("categories.json", json);
+        }
+
+        public void LoadFromFileCategories()
+        {
+            if (File.Exists("categories.json"))
+            {
+                string json = File.ReadAllText("categories.json");
+                Categorias = JsonSerializer.Deserialize<List<string>>(json) ?? new List<string>();
+            }
+        }
     }
 }

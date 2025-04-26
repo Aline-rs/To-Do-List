@@ -47,38 +47,16 @@ namespace ToDoList
             }
 
             Console.WriteLine("\nCategorias disponíveis:");
-            foreach (var categoria in Enum.GetValues(typeof(Category.Categoria)))
+            for (int i = 0; i < Category.Categorias.Count; i++)
             {
-                Console.WriteLine($"{(int)categoria}. {categoria}");
-            }
-
-            int index = Enum.GetValues(typeof(Category.Categoria)).Length + 1;
-            foreach (var categoria in Category.CategoriasAdicionais)
-            {
-                Console.WriteLine($"{index}. {categoria}");
-                index++;
+                Console.WriteLine($"{i + 1}. {Category.Categorias[i]}");
             }
 
             Console.Write("\nEscolha uma categoria (número): ");
-            if (int.TryParse(Console.ReadLine(), out int categoriaEscolhida))
+            if (int.TryParse(Console.ReadLine(), out int categoriaEscolhida) &&
+                categoriaEscolhida > 0 && categoriaEscolhida <= Category.Categorias.Count)
             {
-                if (categoriaEscolhida >= 1 && categoriaEscolhida <= Enum.GetValues(typeof(Category.Categoria)).Length)
-                {
-                    task.categoria = ((Category.Categoria)categoriaEscolhida).ToString();
-                }
-                else if (categoriaEscolhida > Enum.GetValues(typeof(Category.Categoria)).Length &&
-                         categoriaEscolhida <= Enum.GetValues(typeof(Category.Categoria)).Length + Category.CategoriasAdicionais.Count)
-                {
-                    task.categoria = Category.CategoriasAdicionais[categoriaEscolhida - Enum.GetValues(typeof(Category.Categoria)).Length - 1];
-                }
-                else
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Categoria inválida. A tarefa não foi adicionada.");
-                    Console.WriteLine("Aperte ENTER para voltar ao menu.");
-                    Console.ReadLine();
-                    return;
-                }
+                task.categoria = Category.Categorias[categoriaEscolhida - 1];
             }
             else
             {
@@ -94,6 +72,7 @@ namespace ToDoList
 
             Console.WriteLine();
             Console.WriteLine("Tarefa adicionada com sucesso!");
+            Console.WriteLine();
             Console.WriteLine("Aperte ENTER para voltar ao menu.");
             Console.ReadLine();
         }
@@ -132,27 +111,30 @@ namespace ToDoList
                     return;
                 }
                 Console.WriteLine("\nCategorias disponíveis:");
-                foreach (var categoria in Enum.GetValues(typeof(Category.Categoria)))
+                for (int i = 0; i < Category.Categorias.Count; i++)
                 {
-                    Console.WriteLine($"{(int)categoria}. {categoria}");
+                    Console.WriteLine($"{i + 1}. {Category.Categorias[i]}");
                 }
-                Console.WriteLine("Alterar categoria: ");
+                Console.WriteLine();
+                Console.Write("Alterar categoria: ");
                 if (int.TryParse(Console.ReadLine(), out int categoriaEscolhida) &&
-                    Enum.IsDefined(typeof(Category.Categoria), categoriaEscolhida))
+                    categoriaEscolhida > 0 && categoriaEscolhida <= Category.Categorias.Count)
                 {
-                    task.categoria = ((Category.Categoria)categoriaEscolhida).ToString();
+                    task.categoria = Category.Categorias[categoriaEscolhida - 1];
                 }
                 else
                 {
+                    Console.WriteLine();
                     Console.WriteLine("Categoria inválida. A tarefa não foi adicionada.");
+                    Console.WriteLine("Aperte ENTER para voltar ao menu.");
+                    Console.ReadLine();
                     return;
                 }
 
                 tasks[id] = task;
                 SaveToFile();
-
+                Console.WriteLine();
                 Console.WriteLine($"Tarefa '{task.titulo}' atualizada com sucesso!");
-                Console.ReadLine();
                 Console.WriteLine();
                 Console.WriteLine("Aperte ENTER para voltar ao menu.");
                 Console.ReadLine();
