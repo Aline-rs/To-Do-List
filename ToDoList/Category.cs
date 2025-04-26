@@ -8,13 +8,9 @@ namespace ToDoList
 {
     [Serializable]
     public class Category
-
-
     {
         public static List<string> Categorias = new List<string> { "Casa", "Pessoal", "Estudo" };
         enum Gerenciador { Listar = 1, Adicionar, Remover, Voltar }
-
-        TaskManager taskManager = new TaskManager();
 
         public void MenuCategory()
         {
@@ -87,6 +83,7 @@ namespace ToDoList
             if (!string.IsNullOrWhiteSpace(nomeCategoria) && !Categorias.Contains(nomeCategoria))
             {
                 Categorias.Add(nomeCategoria);
+                Console.WriteLine();
                 Console.WriteLine("Categoria adicionada com sucesso!");
                 SaveToFileCategories();
                 Console.WriteLine();
@@ -134,16 +131,59 @@ namespace ToDoList
 
         public void SaveToFileCategories()
         {
-            string json = JsonSerializer.Serialize(Categorias);
-            File.WriteAllText("categories.json", json);
+            try
+            {
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "categories.txt");
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    foreach (var categoria in Categorias)
+                    {
+                        writer.WriteLine(categoria);
+                    }
+                }
+                Console.WriteLine($"Categorias salvas com sucesso no arquivo: {filePath}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro ao salvar as categorias:");
+                Console.WriteLine(ex.Message);
+            }
         }
 
         public void LoadFromFileCategories()
         {
-            if (File.Exists("categories.json"))
+            try
             {
-                string json = File.ReadAllText("categories.json");
-                Categorias = JsonSerializer.Deserialize<List<string>>(json) ?? new List<string>();
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "categories.txt");
+                if (File.Exists(filePath))
+                {
+                    using (StreamReader reader = new StreamReader(filePath))
+                    {
+                        Categorias.Clear(); // Limpa a lista antes de carregar
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            if (!string.IsNullOrWhiteSpace(line))
+                            {
+                                Categorias.Add(line);
+                            }
+                        }
+                    }
+                    Console.WriteLine($"Categorias carregadas com sucesso do arquivo: {filePath}");
+                }
+                else
+                {
+                    Console.WriteLine("Arquivo de categorias não encontrado. Criando um novo arquivo com valores padrão.");
+                    Categorias = new List<string> { "Casa", "Pessoal", "Estudo" };
+                    SaveToFileCategories();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro ao carregar as categorias:");
+                Console.WriteLine(ex.Message);
+                Categorias = new List<string> { "Casa", "Pessoal", "Estudo" };
+                SaveToFileCategories(); // Recria o arquivo com valores padrão
             }
         }
     }
