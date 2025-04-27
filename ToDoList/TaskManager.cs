@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
+using System.Text.Json;
 
 namespace ToDoList
 {
+    [Serializable]
     public class TaskManager
     {
         static List<Task> tasks = new List<Task>();
-        [System.Serializable]
+        
         struct Task
         {
             public string titulo;
@@ -179,7 +180,6 @@ namespace ToDoList
             }
         }
 
-
         public void CompleteTask()
         {
             ListTasks(false); // Lista as tarefas sem pausar
@@ -234,34 +234,70 @@ namespace ToDoList
 
         public void SaveToFile()
         {
-            using (FileStream stream = new FileStream("tasks.txt", FileMode.OpenOrCreate))
+            try
             {
-                BinaryFormatter encoder = new BinaryFormatter();
-                encoder.Serialize(stream, tasks);
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tasks.txt");
+                using (StreamWriter writer = new StreamWriter(filePath))
+                {
+                    foreach (var task in tasks)
+                    {
+                        // Escreve cada propriedade da tarefa separada por um delimitador "|"
+                        writer.WriteLine($"{task.titulo}|{task.descricao}|{task.dataVencimento:yyyy-MM-dd}|{task.categoria}|{task.concluida}");
+                    }
+                }
+                Console.WriteLine("Tarefas salvas com sucesso no arquivo de texto!");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erro ao salvar as tarefas:");
+                Console.WriteLine(ex.Message);
             }
         }
 
         public void LoadFromFile()
         {
-            FileStream stream = new FileStream("tasks.txt", FileMode.OpenOrCreate);
             try
             {
-
-                BinaryFormatter enconder = new BinaryFormatter();
-
-                tasks = (List<Task>)enconder.Deserialize(stream);
-
-                if (tasks == null)
+                string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "tasks.txt");
+                if (File.Exists(filePath))
                 {
+                    using (StreamReader reader = new StreamReader(filePath))
+                    {
+                        tasks.Clear(); // Limpa a lista antes de carregar
+                        string line;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            // Divide a linha em partes usando o delimitador "|"
+                            string[] parts = line.Split('|');
+                            if (parts.Length == 5)
+                            {
+                                Task task = new Task
+                                {
+                                    titulo = parts[0],
+                                    descricao = parts[1],
+                                    dataVencimento = DateTime.Parse(parts[2]),
+                                    categoria = parts[3],
+                                    concluida = bool.Parse(parts[4])
+                                };
+                                tasks.Add(task);
+                            }
+                        }
+                    }
+                    Console.WriteLine("Tarefas carregadas com sucesso do arquivo de texto!");
+                }
+                else
+                {
+                    Console.WriteLine("Arquivo de tarefas não encontrado. Criando um novo arquivo.");
                     tasks = new List<Task>();
+                    SaveToFile();
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
+                Console.WriteLine("Erro ao carregar as tarefas:");
+                Console.WriteLine(ex.Message);
                 tasks = new List<Task>();
             }
-
-            stream.Close();
         }
 
     }
