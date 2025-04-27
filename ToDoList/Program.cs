@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.IO;
-using ToDoList;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ToDoList
 {
-    [System.Serializable] // Move the Serializable attribute to the class declaration  
+    [System.Serializable]
     class Program
     {
         enum Menu { Listagem = 1, Adcionar, Editar, Marcar, Remover, Gerenciar, Sair }
