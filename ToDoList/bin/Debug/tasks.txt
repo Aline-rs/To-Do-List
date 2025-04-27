@@ -1,3 +1,4 @@
-Teste demanda|Testando|2024-05-25|Estudo|False
-Comprar pão|sadhais|2025-05-25|Casa|True
-Quem faz calculo ai|exame de urinalise|2025-04-28|Trabalho|False
+Demanda testada|A demanda foi testada e validada|2025-05-30|Trabalho|False
+Quem faz calculo ai|exame de urinalise|2025-04-28|Trabalho|True
+Mercado|Comprar frutas e legumes|2025-05-26|Casa|False
+Legumes|Comprar legumes no supermercado|2025-05-25|Supermercado|False
