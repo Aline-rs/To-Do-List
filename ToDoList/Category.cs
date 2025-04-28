@@ -51,7 +51,6 @@ namespace ToDoList
                 }
             }
         }
-
         public void ListCategory(bool pausar = true)
         {
             Console.Clear();

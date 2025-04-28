@@ -1,0 +1,12 @@
+Teste|teste|2025-04-25|Casa|False
+bATATA|Amarela|2025-05-24|Pessoal|False
+asuhsd|asiuhdja|2025-05-26|Estudo|False
+Teste|Testando|2025-04-28|Pessoal|False
+asdas|asd|2025-04-28|Pessoal|False
+tatatinha|bababa|2025-05-28|Estudo|False
+Teste|testando de novo|2025-05-28|Estudo|False
+Batata|Teste|2025-04-28|Pessoal|False
+Teste|nnn|2025-04-28|Casa|False
+Teste|Teste|2025-04-28||False
+Teste|Teste|2025-04-28|Casa|False
+aushdiuas|saudhiaus|2025-04-28|Batata|True

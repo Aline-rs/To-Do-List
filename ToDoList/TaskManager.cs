@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text.Json;
+using ToDoList.Utils;
 
 namespace ToDoList
 {
@@ -27,25 +29,11 @@ namespace ToDoList
             Console.WriteLine("        ADICIONAR NOVA TAREFA        ");
             Console.WriteLine("-------------------------------------");
 
-            Console.Write("Título: ");
-            task.titulo = Console.ReadLine();
+            task.titulo = InputValidador.GetValidInput<string>("Título: ", InputValidador.TryParseNonEmptyString);
 
-            Console.Write("Descrição: ");
-            task.descricao = Console.ReadLine();
+            task.descricao = InputValidador.GetValidInput<string>("Descrição: ", InputValidador.TryParseNonEmptyString);
 
-            Console.Write("Data de vencimento (dd/mm/aaaa): ");
-            if (DateTime.TryParse(Console.ReadLine(), out DateTime dataVencimento))
-            {
-                task.dataVencimento = dataVencimento;
-            }
-            else
-            {
-                Console.WriteLine();
-                Console.WriteLine("Data inválida. A tarefa não foi adicionada.");
-                Console.WriteLine("Aperte ENTER para voltar ao menu.");
-                Console.ReadLine();
-                return;
-            }
+            task.dataVencimento = InputValidador.GetValidInput<DateTime>("Data de vencimento (dd/MM/yyyy): ", InputValidador.TryParseFutureDate);
 
             Console.WriteLine("\nCategorias disponíveis:");
             for (int i = 0; i < Category.Categorias.Count; i++)
@@ -53,20 +41,17 @@ namespace ToDoList
                 Console.WriteLine($"{i + 1}. {Category.Categorias[i]}");
             }
 
-            Console.Write("\nEscolha uma categoria (número): ");
-            if (int.TryParse(Console.ReadLine(), out int categoriaEscolhida) &&
-                categoriaEscolhida > 0 && categoriaEscolhida <= Category.Categorias.Count)
-            {
-                task.categoria = Category.Categorias[categoriaEscolhida - 1];
-            }
-            else
-            {
-                Console.WriteLine();
-                Console.WriteLine("Categoria inválida. A tarefa não foi adicionada.");
-                Console.WriteLine("Aperte ENTER para voltar ao menu.");
-                Console.ReadLine();
-                return;
-            }
+            int categoriaEscolhida = InputValidador.GetValidInput<int>(
+                "Escolha uma categoria (número): ",
+                entrada =>
+                {
+                    bool valido = int.TryParse(entrada, out int valor)
+                                  && valor > 0
+                                  && valor <= Category.Categorias.Count;
+                    return (valido, valor);
+                }
+            );
+            task.categoria = Category.Categorias[categoriaEscolhida - 1];
 
             tasks.Add(task);
             SaveToFile();
