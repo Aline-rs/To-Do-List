@@ -19,9 +19,9 @@ namespace ToDoList
 
             while (!escolheuSair)
             {
-                Console.WriteLine("====================================");
-                Console.WriteLine("===== SISTEMA DE TAREFAS - v1.0 ====");
-                Console.WriteLine("====================================");
+                Console.WriteLine("======================================");
+                Console.WriteLine("===== SISTEMA DE TAREFAS - v2.0.0 ====");
+                Console.WriteLine("======================================");
 
                 Console.WriteLine("1. Listar tarefas\n2. Adicionar nova tarefa\n3. Editar tarefa\n4. Marcar tarefa como concluída\n5. Remover tarefas\n6. Gerenciar categorias\n7. Sair");
 
