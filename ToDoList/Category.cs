@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
+using ToDoList.Utils;
 
 
 namespace ToDoList
@@ -76,24 +77,25 @@ namespace ToDoList
             Console.WriteLine("-------------------------------------");
             Console.WriteLine("          ADICIONAR CATEGORIA        ");
             Console.WriteLine("-------------------------------------");
-            Console.Write("Nome da nova categoria: ");
-            string nomeCategoria = Console.ReadLine();
 
-            if (!string.IsNullOrWhiteSpace(nomeCategoria) && !Categorias.Contains(nomeCategoria))
-            {
-                Categorias.Add(nomeCategoria);
-                Console.WriteLine();
-                Console.WriteLine("Categoria adicionada com sucesso!");
-                SaveToFileCategories();
-                Console.WriteLine();
+            // Capturar o nome da nova categoria usando o InputValidator
+            string nomeCategoria = InputValidador.GetValidInput<string>(
+                "Nome da nova categoria: ",
+                entrada =>
+                {
+                    bool valido = !string.IsNullOrWhiteSpace(entrada)
+                                  && !Categorias.Contains(entrada.Trim(), StringComparer.OrdinalIgnoreCase); // Ignora maiúsculas/minúsculas
+                    return (valido, entrada?.Trim());
+                }
+            );
 
-            }
-            else
-            {
-                Console.WriteLine("Categoria inválida ou já existente.");
-                Console.WriteLine();
-            }
+            // Adicionar a categoria validada
+            Categorias.Add(nomeCategoria);
+            SaveToFileCategories();
 
+            Console.WriteLine();
+            Console.WriteLine($"Categoria '{nomeCategoria}' adicionada com sucesso!");
+            Console.WriteLine();
             Console.WriteLine("Aperte ENTER para voltar ao menu.");
             Console.ReadLine();
         }
@@ -104,26 +106,36 @@ namespace ToDoList
             Console.WriteLine("-------------------------------------");
             Console.WriteLine("           REMOVER CATEGORIA         ");
             Console.WriteLine("-------------------------------------");
-            Console.Write("Nome da nova categoria: ");
 
             ListCategory(false);
             Console.WriteLine();
 
-            Console.Write("Digite o número da categoria a ser removida: ");
-            if (int.TryParse(Console.ReadLine(), out int index) && index > 0 && index <= Categorias.Count)
+            if (Categorias.Count == 0)
             {
-                string categoriaRemovida = Categorias[index - 1];
-                Categorias.RemoveAt(index - 1);
-                Console.WriteLine();
-                SaveToFileCategories();
-                Console.WriteLine($"Categoria '{categoriaRemovida}' removida com sucesso!");
-                Console.WriteLine();
-            }
-            else
-            {
-                Console.WriteLine("Opção inválida!");
+                Console.WriteLine("Nenhuma categoria disponível para remover.");
+                Console.WriteLine("Aperte ENTER para voltar ao menu.");
+                Console.ReadLine();
+                return;
             }
 
+            int index = InputValidador.GetValidInput<int>(
+                "Digite o número da categoria a ser removida: ",
+                entrada =>
+                {
+                    bool valido = int.TryParse(entrada, out int valor)
+                                  && valor > 0
+                                  && valor <= Categorias.Count;
+                    return (valido, valor);
+                }
+            );
+
+            string categoriaRemovida = Categorias[index - 1];
+            Categorias.RemoveAt(index - 1);
+            SaveToFileCategories();
+
+            Console.WriteLine();
+            Console.WriteLine($"Categoria '{categoriaRemovida}' removida com sucesso!");
+            Console.WriteLine();
             Console.WriteLine("Aperte ENTER para voltar ao menu.");
             Console.ReadLine();
         }
