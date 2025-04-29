@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
+using ToDoList.Utils;
 
 namespace ToDoList
 {
@@ -27,25 +27,11 @@ namespace ToDoList
             Console.WriteLine("        ADICIONAR NOVA TAREFA        ");
             Console.WriteLine("-------------------------------------");
 
-            Console.Write("Título: ");
-            task.titulo = Console.ReadLine();
+            task.titulo = InputValidador.GetValidInput<string>("Título: ", InputValidador.TryParseNonEmptyString);
 
-            Console.Write("Descrição: ");
-            task.descricao = Console.ReadLine();
+            task.descricao = InputValidador.GetValidInput<string>("Descrição: ", InputValidador.TryParseNonEmptyString);
 
-            Console.Write("Data de vencimento (dd/mm/aaaa): ");
-            if (DateTime.TryParse(Console.ReadLine(), out DateTime dataVencimento))
-            {
-                task.dataVencimento = dataVencimento;
-            }
-            else
-            {
-                Console.WriteLine();
-                Console.WriteLine("Data inválida. A tarefa não foi adicionada.");
-                Console.WriteLine("Aperte ENTER para voltar ao menu.");
-                Console.ReadLine();
-                return;
-            }
+            task.dataVencimento = InputValidador.GetValidInput<DateTime>("Data de vencimento (dd/MM/yyyy): ", InputValidador.TryParseFutureDate);
 
             Console.WriteLine("\nCategorias disponíveis:");
             for (int i = 0; i < Category.Categorias.Count; i++)
@@ -53,20 +39,17 @@ namespace ToDoList
                 Console.WriteLine($"{i + 1}. {Category.Categorias[i]}");
             }
 
-            Console.Write("\nEscolha uma categoria (número): ");
-            if (int.TryParse(Console.ReadLine(), out int categoriaEscolhida) &&
-                categoriaEscolhida > 0 && categoriaEscolhida <= Category.Categorias.Count)
-            {
-                task.categoria = Category.Categorias[categoriaEscolhida - 1];
-            }
-            else
-            {
-                Console.WriteLine();
-                Console.WriteLine("Categoria inválida. A tarefa não foi adicionada.");
-                Console.WriteLine("Aperte ENTER para voltar ao menu.");
-                Console.ReadLine();
-                return;
-            }
+            int categoriaEscolhida = InputValidador.GetValidInput<int>(
+                "Escolha uma categoria (número): ",
+                entrada =>
+                {
+                    bool valido = int.TryParse(entrada, out int valor)
+                                  && valor > 0
+                                  && valor <= Category.Categorias.Count;
+                    return (valido, valor);
+                }
+            );
+            task.categoria = Category.Categorias[categoriaEscolhida - 1];
 
             tasks.Add(task);
             SaveToFile();
@@ -80,7 +63,7 @@ namespace ToDoList
 
         public void EditTask()
         {
-            ListTasks(false); // Lista as tarefas sem pausar
+            ListTasks(false);
 
             Console.WriteLine("-------------------------------------");
             Console.WriteLine("           EDITAR TAREFAS            ");
@@ -95,22 +78,12 @@ namespace ToDoList
                 Console.WriteLine($"Tarefa atual: {task.titulo}");
                 Console.WriteLine();
 
-                Console.Write("Novo título: ");
-                task.titulo = Console.ReadLine();
+                task.titulo = InputValidador.GetValidInput<string>("Novo título: ", InputValidador.TryParseNonEmptyString);
 
-                Console.Write("Nova descrição: ");
-                task.descricao = Console.ReadLine();
+                task.descricao = InputValidador.GetValidInput<string>("Nova descrição: ", InputValidador.TryParseNonEmptyString);
 
-                Console.Write("Nova data de vencimento (dd/mm/aaaa): ");
-                if (DateTime.TryParse(Console.ReadLine(), out DateTime novaDataVencimento))
-                {
-                    task.dataVencimento = novaDataVencimento;
-                }
-                else
-                {
-                    Console.WriteLine("Data inválida. A tarefa não foi atualizada.");
-                    return;
-                }
+                task.dataVencimento = InputValidador.GetValidInput<DateTime>("Nova data de vencimento (dd/mm/aaaa): ", InputValidador.TryParseFutureDate);
+                
                 Console.WriteLine("\nCategorias disponíveis:");
                 for (int i = 0; i < Category.Categorias.Count; i++)
                 {
@@ -118,19 +91,18 @@ namespace ToDoList
                 }
                 Console.WriteLine();
                 Console.Write("Alterar categoria: ");
-                if (int.TryParse(Console.ReadLine(), out int categoriaEscolhida) &&
-                    categoriaEscolhida > 0 && categoriaEscolhida <= Category.Categorias.Count)
-                {
-                    task.categoria = Category.Categorias[categoriaEscolhida - 1];
-                }
-                else
-                {
-                    Console.WriteLine();
-                    Console.WriteLine("Categoria inválida. A tarefa não foi adicionada.");
-                    Console.WriteLine("Aperte ENTER para voltar ao menu.");
-                    Console.ReadLine();
-                    return;
-                }
+
+                int categoriaEscolhida = InputValidador.GetValidInput<int>(
+                    "Escolha uma categoria (número): ",
+                    entrada =>
+                    {
+                        bool valido = int.TryParse(entrada, out int valor)
+                                      && valor > 0
+                                      && valor <= Category.Categorias.Count;
+                        return (valido, valor);
+                    }
+                );
+                task.categoria = Category.Categorias[categoriaEscolhida - 1];
 
                 tasks[id] = task;
                 SaveToFile();
@@ -161,8 +133,8 @@ namespace ToDoList
 
                 foreach (Task task in tasks)
                 {
-                    string status = task.concluida ? "[X]" : "[ ]"; // Exibe o status da tarefa
-                    string mensagem = task.concluida ? "Concluída" : task.dataVencimento.ToString("dd/MM/yyyy"); // Mostra "Concluída" ou a data
+                    string status = task.concluida ? "[X]" : "[ ]";
+                    string mensagem = task.concluida ? "Concluída" : task.dataVencimento.ToString("dd/MM/yyyy");
 
                     Console.WriteLine($"ID: [{i}] | {status} {task.titulo} | Categoria: {task.categoria} - {mensagem}");
                     i++;
@@ -182,7 +154,7 @@ namespace ToDoList
 
         public void CompleteTask()
         {
-            ListTasks(false); // Lista as tarefas sem pausar
+            ListTasks(false);
 
             Console.WriteLine("Digite o ID da tarefa que deseja marcar como concluída: ");
             string input = Console.ReadLine();
@@ -190,8 +162,8 @@ namespace ToDoList
             if (int.TryParse(input, out int id) && id >= 0 && id < tasks.Count)
             {
                 Task task = tasks[id];
-                task.concluida = true; // Marca a tarefa como concluída
-                tasks[id] = task; // Atualiza a tarefa na lista
+                task.concluida = true;
+                tasks[id] = task;
                 SaveToFile();
 
                 Console.WriteLine($"Tarefa '{task.titulo}' marcada como concluída com sucesso!");
@@ -212,23 +184,31 @@ namespace ToDoList
         {
             ListTasks(false);
 
-            Console.WriteLine("Digite o ID da task que você quer remover: ");
-            string input = Console.ReadLine();
-            if (int.TryParse(input, out int id) && id >= 0 && id < tasks.Count)
+            if (tasks.Count == 0)
             {
-                tasks.RemoveAt(id);
-                Console.WriteLine($"Tarefa removida com sucesso!");
-                SaveToFile();
-
+                Console.WriteLine("\nNenhuma tarefa disponível para remover.");
                 Console.WriteLine();
                 Console.WriteLine("Aperte ENTER para voltar ao menu.");
-            }
-            else
-            {
-                Console.WriteLine("ID inválido ou entrada inválida!");
-                Console.WriteLine("Aperte ENTER para voltar ao menu.");
                 Console.ReadLine();
+                return;
             }
+            
+            int id = InputValidador.GetValidInput<int>(
+                "\nDigite o ID da task que você quer remover: ",
+                entrada =>
+                {
+                    bool valido = int.TryParse(entrada, out int valor)
+                                  && valor >= 0
+                                  && valor < tasks.Count;
+                    return (valido, valor);
+                }
+            );
+
+            tasks.RemoveAt(id);
+            Console.WriteLine($"\nTarefa removida com sucesso!");
+            SaveToFile();
+
+            Console.WriteLine("\nAperte ENTER para voltar ao menu.");
             Console.ReadLine();
         }
 
@@ -241,7 +221,6 @@ namespace ToDoList
                 {
                     foreach (var task in tasks)
                     {
-                        // Escreve cada propriedade da tarefa separada por um delimitador "|"
                         writer.WriteLine($"{task.titulo}|{task.descricao}|{task.dataVencimento:yyyy-MM-dd}|{task.categoria}|{task.concluida}");
                     }
                 }
