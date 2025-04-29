@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Text.Json;
 using ToDoList.Utils;
 
 namespace ToDoList
@@ -65,7 +63,7 @@ namespace ToDoList
 
         public void EditTask()
         {
-            ListTasks(false); // Lista as tarefas sem pausar
+            ListTasks(false);
 
             Console.WriteLine("-------------------------------------");
             Console.WriteLine("           EDITAR TAREFAS            ");
@@ -135,8 +133,8 @@ namespace ToDoList
 
                 foreach (Task task in tasks)
                 {
-                    string status = task.concluida ? "[X]" : "[ ]"; // Exibe o status da tarefa
-                    string mensagem = task.concluida ? "Concluída" : task.dataVencimento.ToString("dd/MM/yyyy"); // Mostra "Concluída" ou a data
+                    string status = task.concluida ? "[X]" : "[ ]";
+                    string mensagem = task.concluida ? "Concluída" : task.dataVencimento.ToString("dd/MM/yyyy");
 
                     Console.WriteLine($"ID: [{i}] | {status} {task.titulo} | Categoria: {task.categoria} - {mensagem}");
                     i++;
@@ -156,7 +154,7 @@ namespace ToDoList
 
         public void CompleteTask()
         {
-            ListTasks(false); // Lista as tarefas sem pausar
+            ListTasks(false);
 
             Console.WriteLine("Digite o ID da tarefa que deseja marcar como concluída: ");
             string input = Console.ReadLine();
@@ -164,8 +162,8 @@ namespace ToDoList
             if (int.TryParse(input, out int id) && id >= 0 && id < tasks.Count)
             {
                 Task task = tasks[id];
-                task.concluida = true; // Marca a tarefa como concluída
-                tasks[id] = task; // Atualiza a tarefa na lista
+                task.concluida = true;
+                tasks[id] = task;
                 SaveToFile();
 
                 Console.WriteLine($"Tarefa '{task.titulo}' marcada como concluída com sucesso!");
@@ -223,7 +221,6 @@ namespace ToDoList
                 {
                     foreach (var task in tasks)
                     {
-                        // Escreve cada propriedade da tarefa separada por um delimitador "|"
                         writer.WriteLine($"{task.titulo}|{task.descricao}|{task.dataVencimento:yyyy-MM-dd}|{task.categoria}|{task.concluida}");
                     }
                 }

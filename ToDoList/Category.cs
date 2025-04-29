@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
+using System.Linq;
 using ToDoList.Utils;
 
 
@@ -78,18 +78,16 @@ namespace ToDoList
             Console.WriteLine("          ADICIONAR CATEGORIA        ");
             Console.WriteLine("-------------------------------------");
 
-            // Capturar o nome da nova categoria usando o InputValidator
             string nomeCategoria = InputValidador.GetValidInput<string>(
                 "Nome da nova categoria: ",
                 entrada =>
                 {
                     bool valido = !string.IsNullOrWhiteSpace(entrada)
-                                  && !Categorias.Contains(entrada.Trim(), StringComparer.OrdinalIgnoreCase); // Ignora maiúsculas/minúsculas
+                                  && !Categorias.Contains(entrada.Trim(), StringComparer.OrdinalIgnoreCase);
                     return (valido, entrada?.Trim());
                 }
             );
 
-            // Adicionar a categoria validada
             Categorias.Add(nomeCategoria);
             SaveToFileCategories();
 
