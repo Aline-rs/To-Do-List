@@ -9,7 +9,9 @@ namespace ToDoList
     public class TaskManager
     {
         static List<Task> tasks = new List<Task>();
-        
+
+        MenuManager menuManager = new MenuManager();
+
         struct Task
         {
             public string titulo;
@@ -23,9 +25,7 @@ namespace ToDoList
             Console.Clear();
             Task task = new Task();
 
-            Console.WriteLine("-------------------------------------");
-            Console.WriteLine("        ADICIONAR NOVA TAREFA        ");
-            Console.WriteLine("-------------------------------------");
+            menuManager.AdicionarNovaTarefa();
 
             task.titulo = InputValidador.GetValidInput<string>("Título: ", InputValidador.TryParseNonEmptyString);
 
@@ -65,9 +65,7 @@ namespace ToDoList
         {
             ListTasks(false);
 
-            Console.WriteLine("-------------------------------------");
-            Console.WriteLine("           EDITAR TAREFAS            ");
-            Console.WriteLine("-------------------------------------");
+            menuManager.EditarTarefa();
 
             Console.Write("Digite o ID da tarefa que deseja editar: ");
             string input = Console.ReadLine();
@@ -126,9 +124,8 @@ namespace ToDoList
             Console.Clear();
             if (tasks.Count > 0)
             {
-                Console.WriteLine("-------------------------------------");
-                Console.WriteLine("          LISTA DE TAREFAS           ");
-                Console.WriteLine("-------------------------------------");
+                menuManager.ListaTarefas();
+
                 int i = 0;
 
                 foreach (Task task in tasks)
@@ -155,6 +152,7 @@ namespace ToDoList
         public void CompleteTask()
         {
             ListTasks(false);
+            menuManager.MarcarTarefa();
 
             Console.WriteLine("Digite o ID da tarefa que deseja marcar como concluída: ");
             string input = Console.ReadLine();
@@ -183,6 +181,7 @@ namespace ToDoList
         public void RemoveTask()
         {
             ListTasks(false);
+            menuManager.RemoverTarefa();
 
             if (tasks.Count == 0)
             {
