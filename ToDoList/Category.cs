@@ -179,6 +179,7 @@ namespace ToDoList
                         }
                     }
                     Console.WriteLine($"Categorias carregadas com sucesso do arquivo: {filePath}");
+                    Console.WriteLine();
                 }
                 else
                 {
