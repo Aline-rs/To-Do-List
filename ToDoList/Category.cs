@@ -10,25 +10,21 @@ namespace ToDoList
     [Serializable]
     public class Category
     {
+        MenuManager menuManager = new MenuManager();
+
         public static List<string> Categorias = new List<string> { "Casa", "Pessoal", "Estudo" };
         enum Gerenciador { Listar = 1, Adicionar, Remover, Voltar }
 
         public void MenuCategory()
         {
+
             bool voltarMenuPrincipal = false;
 
             while (!voltarMenuPrincipal)
             {
                 Console.Clear();
-                Console.WriteLine("-------------------------------------");
-                Console.WriteLine("             CATEGORIAS              ");
-                Console.WriteLine("-------------------------------------");
+                menuManager.HomeCategorias();
 
-                Console.WriteLine();
-
-                Console.WriteLine("1. Listar categorias\n2. Adicionar nova categoria\n3. Remover categoria\n4. Voltar");
-                Console.WriteLine();
-                Console.Write("Escolha uma opção: ");
                 int intOp = int.Parse(Console.ReadLine());
                 Gerenciador opcao = (Gerenciador)intOp;
 
@@ -55,9 +51,7 @@ namespace ToDoList
         public void ListCategory(bool pausar = true)
         {
             Console.Clear();
-            Console.WriteLine("-------------------------------------");
-            Console.WriteLine("          CATEGORIAS ATUAIS          ");
-            Console.WriteLine("-------------------------------------");
+            menuManager.ListaCategorias();
 
             for (int i = 0; i < Categorias.Count; i++)
             {
@@ -74,9 +68,7 @@ namespace ToDoList
         public void AddCategory()
         {
             Console.Clear();
-            Console.WriteLine("-------------------------------------");
-            Console.WriteLine("          ADICIONAR CATEGORIA        ");
-            Console.WriteLine("-------------------------------------");
+            menuManager.AdicionarNovaCategoria();
 
             string nomeCategoria = InputValidador.GetValidInput<string>(
                 "Nome da nova categoria: ",
@@ -101,9 +93,7 @@ namespace ToDoList
         public void RemoveCategory()
         {
             Console.Clear();
-            Console.WriteLine("-------------------------------------");
-            Console.WriteLine("           REMOVER CATEGORIA         ");
-            Console.WriteLine("-------------------------------------");
+            menuManager.RemoverCategoria();
 
             ListCategory(false);
             Console.WriteLine();
