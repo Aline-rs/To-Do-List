@@ -1,1 +1,3 @@
 dasuhda|asdasd|2025-05-27|Pessoal|True|Alta
+isjdoias|asduhasiu|2025-06-28|Casa|False|Média
+asdahjsd|sduiahsd|2025-05-28|Estudo|False|Baixa

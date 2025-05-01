@@ -121,7 +121,7 @@ namespace ToDoList
                 );
                 task.prioridade = Prioridade[prioridadeEscolhida - 1];
 
-                Console.WriteLine("\nCategorias disponíveis:");
+                Console.WriteLine("\nCategorias disponíveis:\n");
                 for (int i = 0; i < Category.Categorias.Count; i++)
                 {
                     Console.WriteLine($"{i + 1}. {Category.Categorias[i]}");
@@ -172,7 +172,29 @@ namespace ToDoList
                     string status = task.concluida ? "[X]" : "[ ]";
                     string mensagem = task.concluida ? "Concluída" : task.dataVencimento.ToString("dd/MM/yyyy");
 
-                    Console.WriteLine($"ID: [{i}] | {status} {task.titulo} | Categoria: {task.categoria} | Prazo: {mensagem}| Prioridade: {task.prioridade}");
+                    Console.Write($"ID: [{i}] | {status} {task.titulo} | Categoria: {task.categoria} | Prazo: {mensagem} | Prioridade: ");
+
+                    switch (task.prioridade.ToLower())
+                    {
+                        case "alta":
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            break;
+                        case "media":
+                            Console.ForegroundColor = ConsoleColor.Yellow;
+                            break;
+                        case "baixa":
+                            Console.ForegroundColor = ConsoleColor.Green;
+                            break;
+                        default:
+                            Console.ResetColor();
+                            break;
+                    }
+
+                    // Escreve a prioridade colorida
+                    Console.WriteLine(task.prioridade);
+
+                    // Restaura a cor padrão
+                    Console.ResetColor();
                     i++;
                 }
             }
@@ -180,6 +202,7 @@ namespace ToDoList
             {
                 Console.WriteLine("Nenhuma tarefa cadastrada!");
             }
+
             Console.WriteLine();
             if (pausar)
             {
