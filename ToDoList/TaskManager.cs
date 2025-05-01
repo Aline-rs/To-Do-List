@@ -8,6 +8,7 @@ namespace ToDoList
     [Serializable]
     public class TaskManager
     {
+        static List<string> Prioridade = new List<string> { "Alta", "Média", "Baixa" };
         static List<Task> tasks = new List<Task>();
 
         MenuManager menuManager = new MenuManager();
@@ -19,6 +20,8 @@ namespace ToDoList
             public DateTime dataVencimento;
             public string categoria;
             public bool concluida;
+            public string prioridade;
+
         }
         public void AddTask()
         {
@@ -32,6 +35,24 @@ namespace ToDoList
             task.descricao = InputValidador.GetValidInput<string>("Descrição: ", InputValidador.TryParseNonEmptyString);
 
             task.dataVencimento = InputValidador.GetValidInput<DateTime>("Data de vencimento (dd/MM/yyyy): ", InputValidador.TryParseFutureDate);
+
+            Console.WriteLine("\nPrioridades disponíveis:\n");
+            for (int i = 0; i < Prioridade.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {Prioridade[i]}");
+            }
+
+            int prioridadeEscolhida = InputValidador.GetValidInput<int>(
+                "\nEscolha uma prioridade: ",
+                entrada =>
+                {
+                    bool valido = int.TryParse(entrada, out int valor)
+                                  && valor > 0
+                                  && valor <= Prioridade.Count;
+                    return (valido, valor);
+                }
+            );
+            task.prioridade = Prioridade[prioridadeEscolhida - 1];
 
             Console.WriteLine("\nCategorias disponíveis:");
             for (int i = 0; i < Category.Categorias.Count; i++)
@@ -81,7 +102,25 @@ namespace ToDoList
                 task.descricao = InputValidador.GetValidInput<string>("Nova descrição: ", InputValidador.TryParseNonEmptyString);
 
                 task.dataVencimento = InputValidador.GetValidInput<DateTime>("Nova data de vencimento (dd/mm/aaaa): ", InputValidador.TryParseFutureDate);
-                
+
+                Console.WriteLine("\nPrioridades disponíveis:\n");
+                for (int i = 0; i < Prioridade.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1}. {Prioridade[i]}");
+                }
+
+                int prioridadeEscolhida = InputValidador.GetValidInput<int>(
+                    "\nEscolha uma prioridade: ",
+                    entrada =>
+                    {
+                        bool valido = int.TryParse(entrada, out int valor)
+                                      && valor > 0
+                                      && valor <= Prioridade.Count;
+                        return (valido, valor);
+                    }
+                );
+                task.prioridade = Prioridade[prioridadeEscolhida - 1];
+
                 Console.WriteLine("\nCategorias disponíveis:");
                 for (int i = 0; i < Category.Categorias.Count; i++)
                 {
@@ -133,7 +172,7 @@ namespace ToDoList
                     string status = task.concluida ? "[X]" : "[ ]";
                     string mensagem = task.concluida ? "Concluída" : task.dataVencimento.ToString("dd/MM/yyyy");
 
-                    Console.WriteLine($"ID: [{i}] | {status} {task.titulo} | Categoria: {task.categoria} - {mensagem}");
+                    Console.WriteLine($"ID: [{i}] | {status} {task.titulo} | Categoria: {task.categoria} | Prazo: {mensagem}| Prioridade: {task.prioridade}");
                     i++;
                 }
             }
@@ -220,7 +259,7 @@ namespace ToDoList
                 {
                     foreach (var task in tasks)
                     {
-                        writer.WriteLine($"{task.titulo}|{task.descricao}|{task.dataVencimento:yyyy-MM-dd}|{task.categoria}|{task.concluida}");
+                        writer.WriteLine($"{task.titulo}|{task.descricao}|{task.dataVencimento:yyyy-MM-dd}|{task.categoria}|{task.concluida}|{task.prioridade}");
                     }
                 }
                 Console.WriteLine("Tarefas salvas com sucesso no arquivo de texto!");
@@ -247,7 +286,7 @@ namespace ToDoList
                         {
                             // Divide a linha em partes usando o delimitador "|"
                             string[] parts = line.Split('|');
-                            if (parts.Length == 5)
+                            if (parts.Length == 6)
                             {
                                 Task task = new Task
                                 {
@@ -255,7 +294,8 @@ namespace ToDoList
                                     descricao = parts[1],
                                     dataVencimento = DateTime.Parse(parts[2]),
                                     categoria = parts[3],
-                                    concluida = bool.Parse(parts[4])
+                                    concluida = bool.Parse(parts[4]),
+                                    prioridade = parts[5]
                                 };
                                 tasks.Add(task);
                             }
