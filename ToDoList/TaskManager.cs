@@ -179,7 +179,7 @@ namespace ToDoList
                         case "alta":
                             Console.ForegroundColor = ConsoleColor.Red;
                             break;
-                        case "media":
+                        case "média":
                             Console.ForegroundColor = ConsoleColor.Yellow;
                             break;
                         case "baixa":
