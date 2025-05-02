@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using ToDoList.Utils;
 
 namespace ToDoList
@@ -13,7 +14,7 @@ namespace ToDoList
 
         MenuManager menuManager = new MenuManager();
 
-        struct Task
+        public struct Task
         {
             public string titulo;
             public string descricao;
@@ -158,17 +159,108 @@ namespace ToDoList
             }
         }
 
+        public List<Task> ObterTarefasFiltradas()
+        {
+            string prioridade = null;
+            bool? concluida = null;
+            string categoria = null;
+
+            Console.Clear();
+            Console.WriteLine("====================================");
+            Console.WriteLine("         FILTRAR TAREFAS           ");
+            Console.WriteLine("====================================");
+            Console.WriteLine("Você pode aplicar múltiplos filtros combinados!");
+            Console.WriteLine("------------------------------------");
+
+            // Filtro por status
+            Console.Write("Deseja filtrar por status? (1 = Concluída, 2 = Pendente, Enter para ignorar): ");
+            string statusInput = Console.ReadLine();
+            if (statusInput == "1") concluida = true;
+            else if (statusInput == "2") concluida = false;
+
+            // Filtro por prioridade
+            Console.Write("Deseja filtrar por prioridade? (1 = Alta, 2 = Média, 3 = Baixa, Enter para ignorar): ");
+            string prioridadeInput = Console.ReadLine();
+
+            switch (prioridadeInput)
+            {
+                case "1":
+                    prioridade = "alta";
+                    break;
+                case "2":
+                    prioridade = "média";
+                    break;
+                case "3":
+                    prioridade = "baixa";
+                    break;
+                default:
+                    prioridade = null;
+                    break;
+            }
+
+            // Filtro por categoria
+            Console.Write("Deseja filtrar por categoria? (S/N): ");
+            string catConfirm = Console.ReadLine();
+            if (catConfirm?.Trim().ToUpper() == "S")
+            {
+                Console.WriteLine("\nCategorias disponíveis:");
+                for (int i = 0; i < Category.Categorias.Count; i++)
+                    Console.WriteLine($"{i + 1}. {Category.Categorias[i]}");
+
+                Console.Write("Digite o número da categoria: ");
+                if (int.TryParse(Console.ReadLine(), out int catIndex) &&
+                    catIndex >= 1 && catIndex <= Category.Categorias.Count)
+                {
+                    categoria = Category.Categorias[catIndex - 1];
+                }
+            }
+
+            // Filtro por data mais próxima / distante (exclusivo)
+            Console.Write("Deseja filtrar por data? (1 = Mais próxima, 2 = Mais distante, Enter para ignorar): ");
+            string dataInput = Console.ReadLine();
+
+            if (dataInput == "1")
+            {
+                return tasks
+                    .Where(t => !t.concluida && t.dataVencimento >= DateTime.Today)
+                    .OrderBy(t => t.dataVencimento)
+                    .Take(1)
+                    .ToList();
+            }
+            else if (dataInput == "2")
+            {
+                return tasks
+                    .Where(t => !t.concluida && t.dataVencimento >= DateTime.Today)
+                    .OrderByDescending(t => t.dataVencimento)
+                    .Take(1)
+                    .ToList();
+            }
+
+            // Filtro combinado padrão
+            return tasks
+                .Where(t =>
+                    (prioridade == null || t.prioridade.Equals(prioridade, StringComparison.OrdinalIgnoreCase)) &&
+                    (concluida == null || t.concluida == concluida) &&
+                    (categoria == null || t.categoria.Equals(categoria, StringComparison.OrdinalIgnoreCase))
+                )
+                .ToList();
+        }
+
         public void ListTasks(bool pausar = true)
         {
             Console.Clear();
-            if (tasks.Count > 0)
+
+            var tarefasFiltradas = ObterTarefasFiltradas();
+
+            if (tarefasFiltradas.Count > 0)
             {
+                Console.Clear();
                 menuManager.ListaTarefas();
 
-                int i = 0;
-
-                foreach (Task task in tasks)
+                for (int i = 0; i < tarefasFiltradas.Count; i++)
                 {
+                    Task task = tarefasFiltradas[i];
+
                     string status = task.concluida ? "[X]" : "[ ]";
                     string mensagem = task.concluida ? "Concluída" : task.dataVencimento.ToString("dd/MM/yyyy");
 
@@ -190,17 +282,13 @@ namespace ToDoList
                             break;
                     }
 
-                    // Escreve a prioridade colorida
                     Console.WriteLine(task.prioridade);
-
-                    // Restaura a cor padrão
                     Console.ResetColor();
-                    i++;
                 }
             }
             else
             {
-                Console.WriteLine("Nenhuma tarefa cadastrada!");
+                Console.WriteLine("Nenhuma tarefa encontrada com o filtro aplicado!");
             }
 
             Console.WriteLine();
@@ -253,7 +341,7 @@ namespace ToDoList
                 Console.ReadLine();
                 return;
             }
-            
+
             int id = InputValidador.GetValidInput<int>(
                 "\nDigite o ID da task que você quer remover: ",
                 entrada =>
