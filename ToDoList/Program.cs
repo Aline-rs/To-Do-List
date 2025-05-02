@@ -6,7 +6,7 @@ namespace ToDoList
     [System.Serializable]
     class Program
     {
-        enum Menu { Listagem = 1, Adcionar, Editar, Marcar, Remover, Gerenciar, Sair }
+        enum Menu { Listagem = 1, Adcionar, Editar, Marcar, Remover, Gerenciar, Filtrar, Sair }
 
         static void Main(string[] args)
         {
@@ -57,6 +57,10 @@ namespace ToDoList
 
                     case Menu.Gerenciar:
                         category.MenuCategory();
+                        break;
+
+                    case Menu.Filtrar:
+                        taskManager.ObterTarefasFiltradas();
                         break;
 
                     case Menu.Sair:

@@ -1,0 +1,75 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\aline\\source\\repos\\ToDoList\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B999830A-6653-4B61-AA5D-5C19E558C210}|ToDoList\\ToDoList.csproj|c:\\users\\aline\\source\\repos\\todolist\\todolist\\taskmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B999830A-6653-4B61-AA5D-5C19E558C210}|ToDoList\\ToDoList.csproj|solutionrelative:todolist\\taskmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B999830A-6653-4B61-AA5D-5C19E558C210}|ToDoList\\ToDoList.csproj|C:\\Users\\aline\\source\\repos\\ToDoList\\todolist\\menumanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B999830A-6653-4B61-AA5D-5C19E558C210}|ToDoList\\ToDoList.csproj|solutionrelative:todolist\\menumanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B999830A-6653-4B61-AA5D-5C19E558C210}|ToDoList\\ToDoList.csproj|C:\\Users\\aline\\source\\repos\\ToDoList\\todolist\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B999830A-6653-4B61-AA5D-5C19E558C210}|ToDoList\\ToDoList.csproj|solutionrelative:todolist\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{40ea2e6b-2121-4bb8-a43e-c83c04b51041}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MenuManager.cs",
+              "DocumentMoniker": "C:\\Users\\aline\\source\\repos\\ToDoList\\ToDoList\\MenuManager.cs",
+              "RelativeDocumentMoniker": "ToDoList\\MenuManager.cs",
+              "ToolTip": "C:\\Users\\aline\\source\\repos\\ToDoList\\ToDoList\\MenuManager.cs",
+              "RelativeToolTip": "ToDoList\\MenuManager.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAACvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-01T23:46:11.862Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\aline\\source\\repos\\ToDoList\\ToDoList\\Program.cs",
+              "RelativeDocumentMoniker": "ToDoList\\Program.cs",
+              "ToolTip": "C:\\Users\\aline\\source\\repos\\ToDoList\\ToDoList\\Program.cs",
+              "RelativeToolTip": "ToDoList\\Program.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAgAAABZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-01T23:44:54.033Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "TaskManager.cs",
+              "DocumentMoniker": "C:\\Users\\aline\\source\\repos\\ToDoList\\ToDoList\\TaskManager.cs",
+              "RelativeDocumentMoniker": "ToDoList\\TaskManager.cs",
+              "ToolTip": "C:\\Users\\aline\\source\\repos\\ToDoList\\ToDoList\\TaskManager.cs",
+              "RelativeToolTip": "ToDoList\\TaskManager.cs",
+              "ViewState": "AgIAANcAAAAAAAAAAAAAAOQAAAANAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-01T22:41:06.766Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
