@@ -353,7 +353,7 @@ namespace ToDoList
                 }
             );
 
-            Console.WriteLine($"\nVocê realmente deseja remover a tarefa '{tasks[id].titulo}'? (S/N): ");
+            Console.Write($"\nVocê realmente deseja remover a tarefa '{tasks[id].titulo}'? (S/N): ");
             string confirmacao = Console.ReadLine();
 
             if (confirmacao.ToUpper() == "S")
