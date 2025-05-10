@@ -1,0 +1,5 @@
+Demanda testada|A demanda foi testada e validada|2025-05-30|Trabalho|False
+Quem faz calculo ai|exame de urinalise|2025-04-28|Trabalho|True
+Mercado|Comprar frutas e legumes|2025-05-26|Casa|False
+Aula|Assistir aula|2025-05-25|Estudo|False
+Batatinha|sauydh8iauhwsd|2025-05-25|Aula|False
