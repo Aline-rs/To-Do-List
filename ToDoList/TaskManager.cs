@@ -360,7 +360,12 @@ namespace ToDoList
             {
                 tasks.RemoveAt(id);
                 Console.WriteLine($"\nTarefa removida com sucesso!");
+
                 SaveToFile();
+            }
+            else
+            {
+                Console.WriteLine("\nA task não foi excluida!!");
             }
             Console.WriteLine("\nAperte ENTER para voltar ao menu.");
             Console.ReadLine();
