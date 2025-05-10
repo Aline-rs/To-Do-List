@@ -10,12 +10,14 @@ namespace ToDoList
     public class TaskManager
     {
         static List<string> Prioridade = new List<string> { "Alta", "Média", "Baixa" };
+        static int proximoId = 1;
         static List<Task> tasks = new List<Task>();
 
         MenuManager menuManager = new MenuManager();
 
         public struct Task
         {
+            public int id;
             public string titulo;
             public string descricao;
             public DateTime dataVencimento;
@@ -30,6 +32,8 @@ namespace ToDoList
             Task task = new Task();
 
             menuManager.AdicionarNovaTarefa();
+
+            task.id = proximoId++;
 
             task.titulo = InputValidador.GetValidInput<string>("Título: ", InputValidador.TryParseNonEmptyString);
 
@@ -90,72 +94,76 @@ namespace ToDoList
             menuManager.EditarTarefa();
 
             Console.Write("Digite o ID da tarefa que deseja editar: ");
-            string input = Console.ReadLine();
+            string entradaId = Console.ReadLine();
 
-            if (int.TryParse(input, out int id) && id >= 0 && id < tasks.Count)
+            if (int.TryParse(entradaId, out int parseid))
             {
-                Task task = tasks[id];
-                Console.WriteLine($"Tarefa atual: {task.titulo}");
-                Console.WriteLine();
-
-                task.titulo = InputValidador.GetValidInput<string>("Novo título: ", InputValidador.TryParseNonEmptyString);
-
-                task.descricao = InputValidador.GetValidInput<string>("Nova descrição: ", InputValidador.TryParseNonEmptyString);
-
-                task.dataVencimento = InputValidador.GetValidInput<DateTime>("Nova data de vencimento (dd/mm/aaaa): ", InputValidador.TryParseFutureDate);
-
-                Console.WriteLine("\nPrioridades disponíveis:\n");
-                for (int i = 0; i < Prioridade.Count; i++)
+                int index = tasks.FindIndex(t => t.id == parseid);
+                if (index != -1)
                 {
-                    Console.WriteLine($"{i + 1}. {Prioridade[i]}");
-                }
+                    Task task = tasks[index];
+                    Console.WriteLine($"Tarefa atual: {task.titulo}");
+                    Console.WriteLine();
 
-                int prioridadeEscolhida = InputValidador.GetValidInput<int>(
-                    "\nEscolha uma prioridade: ",
-                    entrada =>
+                    task.titulo = InputValidador.GetValidInput<string>("Novo título: ", InputValidador.TryParseNonEmptyString);
+
+                    task.descricao = InputValidador.GetValidInput<string>("Nova descrição: ", InputValidador.TryParseNonEmptyString);
+
+                    task.dataVencimento = InputValidador.GetValidInput<DateTime>("Nova data de vencimento (dd/mm/aaaa): ", InputValidador.TryParseFutureDate);
+
+                    Console.WriteLine("\nPrioridades disponíveis:\n");
+                    for (int i = 0; i < Prioridade.Count; i++)
                     {
-                        bool valido = int.TryParse(entrada, out int valor)
-                                      && valor > 0
-                                      && valor <= Prioridade.Count;
-                        return (valido, valor);
+                        Console.WriteLine($"{i + 1}. {Prioridade[i]}");
                     }
-                );
-                task.prioridade = Prioridade[prioridadeEscolhida - 1];
 
-                Console.WriteLine("\nCategorias disponíveis:\n");
-                for (int i = 0; i < Category.Categorias.Count; i++)
+                    int prioridadeEscolhida = InputValidador.GetValidInput<int>(
+                        "\nEscolha uma prioridade: ",
+                        entrada =>
+                        {
+                            bool valido = int.TryParse(entrada, out int valor)
+                                          && valor > 0
+                                          && valor <= Prioridade.Count;
+                            return (valido, valor);
+                        }
+                    );
+                    task.prioridade = Prioridade[prioridadeEscolhida - 1];
+
+                    Console.WriteLine("\nCategorias disponíveis:\n");
+                    for (int i = 0; i < Category.Categorias.Count; i++)
+                    {
+                        Console.WriteLine($"{i + 1}. {Category.Categorias[i]}");
+                    }
+                    Console.WriteLine();
+                    Console.Write("Alterar categoria: ");
+
+                    int categoriaEscolhida = InputValidador.GetValidInput<int>(
+                        "Escolha uma categoria (número): ",
+                        entrada =>
+                        {
+                            bool valido = int.TryParse(entrada, out int valor)
+                                          && valor > 0
+                                          && valor <= Category.Categorias.Count;
+                            return (valido, valor);
+                        }
+                    );
+                    task.categoria = Category.Categorias[categoriaEscolhida - 1];
+
+                    tasks[index] = task;
+                    SaveToFile();
+                    Console.WriteLine();
+                    Console.WriteLine($"Tarefa '{task.titulo}' atualizada com sucesso!");
+                    Console.WriteLine();
+                    Console.WriteLine("Aperte ENTER para voltar ao menu.");
+                    Console.ReadLine();
+                }
+                else
                 {
-                    Console.WriteLine($"{i + 1}. {Category.Categorias[i]}");
+                    Console.ReadLine();
+                    Console.WriteLine("ID inválido ou entrada inválida!");
+                    Console.ReadLine();
+                    Console.WriteLine("Aperte ENTER para voltar ao menu.");
                 }
-                Console.WriteLine();
-                Console.Write("Alterar categoria: ");
-
-                int categoriaEscolhida = InputValidador.GetValidInput<int>(
-                    "Escolha uma categoria (número): ",
-                    entrada =>
-                    {
-                        bool valido = int.TryParse(entrada, out int valor)
-                                      && valor > 0
-                                      && valor <= Category.Categorias.Count;
-                        return (valido, valor);
-                    }
-                );
-                task.categoria = Category.Categorias[categoriaEscolhida - 1];
-
-                tasks[id] = task;
-                SaveToFile();
-                Console.WriteLine();
-                Console.WriteLine($"Tarefa '{task.titulo}' atualizada com sucesso!");
-                Console.WriteLine();
-                Console.WriteLine("Aperte ENTER para voltar ao menu.");
-                Console.ReadLine();
-            }
-            else
-            {
-                Console.ReadLine();
-                Console.WriteLine("ID inválido ou entrada inválida!");
-                Console.ReadLine();
-                Console.WriteLine("Aperte ENTER para voltar ao menu.");
             }
         }
 
@@ -264,7 +272,7 @@ namespace ToDoList
                     string status = task.concluida ? "[X]" : "[ ]";
                     string mensagem = task.concluida ? "Concluída" : task.dataVencimento.ToString("dd/MM/yyyy");
 
-                    Console.Write($"ID: [{i}] | {status} {task.titulo} | Categoria: {task.categoria} | Prazo: {mensagem} | Prioridade: ");
+                    Console.Write($"ID: [{task.id}] | {status} {task.titulo} | Categoria: {task.categoria} | Prazo: {mensagem} | Prioridade: ");
 
                     switch (task.prioridade.ToLower())
                     {
@@ -307,25 +315,29 @@ namespace ToDoList
             Console.WriteLine("Digite o ID da tarefa que deseja marcar como concluída: ");
             string input = Console.ReadLine();
 
-            if (int.TryParse(input, out int id) && id >= 0 && id < tasks.Count)
+            if (int.TryParse(input, out int id))
             {
-                Task task = tasks[id];
-                task.concluida = true;
-                tasks[id] = task;
-                SaveToFile();
+                int index = tasks.FindIndex(t => t.id == id);
+                if (index != -1)
+                {
+                    Task task = tasks[index];
+                    task.concluida = true;
+                    tasks[id] = task;
+                    SaveToFile();
 
-                Console.WriteLine($"Tarefa '{task.titulo}' marcada como concluída com sucesso!");
-            }
-            else
-            {
-                Console.WriteLine("ID inválido ou entrada inválida!");
+                    Console.WriteLine($"Tarefa '{task.titulo}' marcada como concluída com sucesso!");
+                }
+                else
+                {
+                    Console.WriteLine("ID inválido ou entrada inválida!");
+                    Console.WriteLine("Aperte ENTER para voltar ao menu.");
+                    Console.ReadLine();
+                }
+
+                Console.WriteLine();
                 Console.WriteLine("Aperte ENTER para voltar ao menu.");
                 Console.ReadLine();
             }
-
-            Console.WriteLine();
-            Console.WriteLine("Aperte ENTER para voltar ao menu.");
-            Console.ReadLine();
         }
 
         public void RemoveTask()
@@ -347,8 +359,7 @@ namespace ToDoList
                 entrada =>
                 {
                     bool valido = int.TryParse(entrada, out int valor)
-                                  && valor >= 0
-                                  && valor < tasks.Count;
+                                  && tasks.Any(t => t.id == valor);
                     return (valido, valor);
                 }
             );
@@ -358,7 +369,8 @@ namespace ToDoList
 
             if (confirmacao.ToUpper() == "S")
             {
-                tasks.RemoveAt(id);
+                int index = tasks.FindIndex(t => t.id == id);
+                tasks.RemoveAt(index);
                 Console.WriteLine($"\nTarefa removida com sucesso!");
 
                 SaveToFile();
@@ -380,7 +392,7 @@ namespace ToDoList
                 {
                     foreach (var task in tasks)
                     {
-                        writer.WriteLine($"{task.titulo}|{task.descricao}|{task.dataVencimento:yyyy-MM-dd}|{task.categoria}|{task.concluida}|{task.prioridade}");
+                        writer.WriteLine($"{task.id}|{task.titulo}|{task.descricao}|{task.dataVencimento:yyyy-MM-dd}|{task.categoria}|{task.concluida}|{task.prioridade}");
                     }
                 }
                 Console.WriteLine("Tarefas salvas com sucesso no arquivo de texto!");
@@ -407,20 +419,25 @@ namespace ToDoList
                         {
                             // Divide a linha em partes usando o delimitador "|"
                             string[] parts = line.Split('|');
-                            if (parts.Length == 6)
+                            if (parts.Length == 7)
                             {
                                 Task task = new Task
                                 {
-                                    titulo = parts[0],
-                                    descricao = parts[1],
-                                    dataVencimento = DateTime.Parse(parts[2]),
-                                    categoria = parts[3],
-                                    concluida = bool.Parse(parts[4]),
-                                    prioridade = parts[5]
+                                    id = int.Parse(parts[0]),
+                                    titulo = parts[1],
+                                    descricao = parts[2],
+                                    dataVencimento = DateTime.Parse(parts[3]),
+                                    categoria = parts[4],
+                                    concluida = bool.Parse(parts[5]),
+                                    prioridade = parts[6]
                                 };
                                 tasks.Add(task);
                             }
                         }
+                        if (tasks.Any())
+                            proximoId = tasks.Max(t => t.id) + 1;
+                        else
+                            proximoId = 1;
                     }
                     Console.WriteLine("Tarefas carregadas com sucesso do arquivo de texto!");
                 }
