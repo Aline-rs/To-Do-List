@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using ToDoList.Utils;
 
 namespace ToDoList
@@ -342,14 +343,13 @@ namespace ToDoList
 
         public void RemoveTask()
         {
-            ListTasks(false);
+            ListTasks(pausar: false);
             menuManager.RemoverTarefa();
 
-            if (tasks.Count == 0)
+            if (!tasks.Any())
             {
                 Console.WriteLine("\nNenhuma tarefa disponível para remover.");
-                Console.WriteLine();
-                Console.WriteLine("Aperte ENTER para voltar ao menu.");
+                Console.WriteLine("\nAperte ENTER para voltar ao menu.");
                 Console.ReadLine();
                 return;
             }
@@ -364,20 +364,27 @@ namespace ToDoList
                 }
             );
 
-            Console.Write($"\nVocê realmente deseja remover a tarefa '{tasks[id].titulo}'? (S/N): ");
+            int index = tasks.FindIndex(t => t.id == id);
+            if (index == -1)
+            {
+                Console.WriteLine("\nTarefa não encontrada.");
+                Console.WriteLine("Aperte ENTER para voltar ao menu.");
+                Console.ReadLine();
+                return;
+            }
+
+            Console.Write($"\nVocê realmente deseja remover a tarefa '{tasks[index].titulo}'? (S/N): ");
             string confirmacao = Console.ReadLine();
 
-            if (confirmacao.ToUpper() == "S")
+            if (confirmacao.Trim().ToUpper() == "S")
             {
-                int index = tasks.FindIndex(t => t.id == id);
                 tasks.RemoveAt(index);
-                Console.WriteLine($"\nTarefa removida com sucesso!");
-
                 SaveToFile();
+                Console.WriteLine("\nTarefa removida com sucesso!");
             }
             else
             {
-                Console.WriteLine("\nA task não foi excluida!!");
+                Console.WriteLine("\nA tarefa não foi excluída.");
             }
             Console.WriteLine("\nAperte ENTER para voltar ao menu.");
             Console.ReadLine();
