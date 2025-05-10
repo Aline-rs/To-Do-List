@@ -1,10 +1,6 @@
 C:\Users\aline\source\repos\ToDoList\ToDoList\bin\Debug\ToDoList.exe.config
 C:\Users\aline\source\repos\ToDoList\ToDoList\bin\Debug\ToDoList.exe
 C:\Users\aline\source\repos\ToDoList\ToDoList\bin\Debug\ToDoList.pdb
-C:\Users\aline\source\repos\ToDoList\ToDoList\obj\Debug\ToDoList.csproj.AssemblyReference.cache
-C:\Users\aline\source\repos\ToDoList\ToDoList\obj\Debug\ToDoList.csproj.CoreCompileInputs.cache
-C:\Users\aline\source\repos\ToDoList\ToDoList\obj\Debug\ToDoList.exe
-C:\Users\aline\source\repos\ToDoList\ToDoList\obj\Debug\ToDoList.pdb
 C:\Users\aline\source\repos\ToDoList\ToDoList\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
 C:\Users\aline\source\repos\ToDoList\ToDoList\bin\Debug\System.Buffers.dll
 C:\Users\aline\source\repos\ToDoList\ToDoList\bin\Debug\System.IO.Pipelines.dll
@@ -25,4 +21,8 @@ C:\Users\aline\source\repos\ToDoList\ToDoList\bin\Debug\System.Text.Encodings.We
 C:\Users\aline\source\repos\ToDoList\ToDoList\bin\Debug\System.Text.Json.xml
 C:\Users\aline\source\repos\ToDoList\ToDoList\bin\Debug\System.Threading.Tasks.Extensions.xml
 C:\Users\aline\source\repos\ToDoList\ToDoList\bin\Debug\System.ValueTuple.xml
+C:\Users\aline\source\repos\ToDoList\ToDoList\obj\Debug\ToDoList.csproj.AssemblyReference.cache
+C:\Users\aline\source\repos\ToDoList\ToDoList\obj\Debug\ToDoList.csproj.CoreCompileInputs.cache
 C:\Users\aline\source\repos\ToDoList\ToDoList\obj\Debug\ToDoList.csproj.Up2Date
+C:\Users\aline\source\repos\ToDoList\ToDoList\obj\Debug\ToDoList.exe
+C:\Users\aline\source\repos\ToDoList\ToDoList\obj\Debug\ToDoList.pdb
