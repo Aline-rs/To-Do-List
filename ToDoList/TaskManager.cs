@@ -353,10 +353,15 @@ namespace ToDoList
                 }
             );
 
-            tasks.RemoveAt(id);
-            Console.WriteLine($"\nTarefa removida com sucesso!");
-            SaveToFile();
+            Console.Write($"\nVocê realmente deseja remover a tarefa '{tasks[id].titulo}'? (S/N): ");
+            string confirmacao = Console.ReadLine();
 
+            if (confirmacao.ToUpper() == "S")
+            {
+                tasks.RemoveAt(id);
+                Console.WriteLine($"\nTarefa removida com sucesso!");
+                SaveToFile();
+            }
             Console.WriteLine("\nAperte ENTER para voltar ao menu.");
             Console.ReadLine();
         }
